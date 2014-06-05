@@ -1,5 +1,5 @@
 * python-sneut
-Python bindings for Frank Timmes' neutrino cooling rate routines.
+Python bindings for [[http://cococubed.asu.edu/code_pages/nuloss.shtml][Frank Timmes' neutrino cooling rate routines]].
 ** Prerequisites
 You must have numpy and a fortran compiler installed.  This is only
 tested on python3, though in principle one should be able to
