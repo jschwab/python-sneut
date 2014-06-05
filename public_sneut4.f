@@ -1,122 +1,7 @@
-      program tnuloss
-      implicit none
-      save
-
-c..tests the neutrino loss rate routine
-c..
-c..ionmax  = number of isotopes in the network
-c..xmass   = mass fractions
-c..ymass   = molar fractions
-c..aion    = number of nucleons
-c..zion    = number of protons
-
-      integer          ionmax
-      parameter        (ionmax=3)
-      double precision xmass(ionmax),ymass(ionmax),
-     1                 aion(ionmax),zion(ionmax),temp,den,abar,zbar,
-     2                 pair,plas,phot,brem,recomb,total
-
-
-c..set the mass fractions, z's and a's of the composition
-c..hydrogen
-      xmass(1) = 0.75d0
-      aion(1)  = 1.0d0
-      zion(1)  = 1.0d0
-
-c..helium
-      xmass(2) = 0.23d0
-      aion(2)  = 4.0d0
-      zion(2)  = 2.0d0
-
-c..carbon 12
-      xmass(3) = 0.02d0
-      aion(3)  = 12.0d0
-      zion(3)  = 6.0d0
-
-
-c..get abar and zbar 
-      call azbar(xmass,aion,zion,ionmax,
-     1           ymass,abar,zbar)
-
-
-c.. set the thermodynamic state
-      temp = 1.0d9
-      den  = 1.0d6 
-
-
-
-c..get the neutrino losses
-      call sneut4(temp,den,zbar,abar,
-     1            pair,plas,phot,brem,recomb,total)
-
-
-c..report the results
-      write(6,01) 'temp =',temp,'den  =',den,
-     1            'abar =',abar,'zbar =',zbar
-
- 01   format(1x,t2,a6,1pe11.4,t22,a6,1pe11.4,
-     1         t42,a6,1pe11.4,t62,a6,1pe11.4)
-
-      write(6,*)
-      write(6,02) 'pair  =',pair,
-     1            'plas  =',plas,
-     2            'phot  =',phot,
-     3            'brem  =',brem,
-     4            'recmb =',recomb,
-     5            'total =',total
- 02   format(1x,a,1pe11.4)
-
-      write(6,*)
-      stop 'normal termination'
-      end
-
-
-
-
-
-      subroutine azbar(xmass,aion,zion,ionmax,
-     1                 ymass,abar,zbar)
-      implicit none
-      save
-
-c..this routine calculates composition variables for an eos routine
-
-c..input:
-c..mass fractions     = xmass(1:ionmax)
-c..number of nucleons = aion(1:ionmax)
-c..charge of nucleus  = zion(1:ionmax)
-c..number of isotopes = ionmax
-
-c..output:
-c..molar abundances        = ymass(1:ionmax), 
-c..mean number of nucleons = abar
-c..mean nucleon charge     = zbar
-
-
-c..declare
-      integer          i,ionmax
-      double precision xmass(ionmax),aion(ionmax),zion(ionmax),
-     1                 ymass(ionmax),abar,zbar,zbarxx,ytot1
-
-      zbarxx  = 0.0d0
-      ytot1   = 0.0d0
-      do i=1,ionmax
-       ymass(i) = xmass(i)/aion(i)
-       ytot1    = ytot1 + ymass(i)
-       zbarxx   = zbarxx + zion(i) * ymass(i)
-      enddo
-      abar   = 1.0d0/ytot1
-      zbar   = zbarxx * abar
-      return
-      end
-
-
-
-
       subroutine sneut4(temp,den,zbar,abar,
      1                  pair,plas,phot,brem,recomb,total)
-      implicit none 
-      save  
+      implicit none
+      save
 
 c..this routine computes neutrino losses from the analytic fits of
 c..itoh et al. apjs 102, 411, 1996
@@ -125,15 +10,15 @@ c..input:
 c..temp = temperature (in K)
 c..den  = density in gr/cm**3)
 c..zbar = mean isotopic charge
-c..abar = mean nucleon number 
+c..abar = mean nucleon number
 
 c..output in erg/g/s:
-c..pair   = pair neutrino contributions 
+c..pair   = pair neutrino contributions
 c..plas   = plasma neutrino contributions
 c..phot   = photoneutrino contributions
 c..brem   = bremstrahlung neutrino contributions
 c..recomb = recombination neutrino contributions
-c..sneut  = total neutrino loss rate 
+c..sneut  = total neutrino loss rate
 
 c..declare
       double precision temp,den,zbar,abar,
@@ -177,9 +62,9 @@ c..propagate through the routine. cv and ca are the vector and axial currents.
      3                  cvp    = 1.0d0 - cv,
      4                  ca     = 0.5d0,
      5                  cap    = 1.0d0 - ca,
-     6                  tfac1  = cv*cv + ca*ca + 
+     6                  tfac1  = cv*cv + ca*ca +
      7                           (xnufam-1.0d0) * (cvp*cvp+cap*cap),
-     8                  tfac2  = cv*cv - ca*ca + 
+     8                  tfac2  = cv*cv - ca*ca +
      9                           (xnufam-1.0d0) * (cvp*cvp - cap*cap),
      &                  tfac3  = tfac2/tfac1,
      1                  tfac4  = 0.5d0 * tfac1,
@@ -223,8 +108,8 @@ c..some frequent factors
 
 
 c..pair neutrino section
-c..for reactions like e+ + e- => nu_e + nubar_e 
-c..equation 2.8 
+c..for reactions like e+ + e- => nu_e + nubar_e
+c..equation 2.8
       gl = 1.0d0 - 13.04d0*xl2 + 133.5d0*xl4 +1534.0d0*xl6 + 918.6d0*xl8
 
 c..equation 2.7
@@ -235,7 +120,7 @@ c..equation 2.7
       else
        xnum = (6.002d19 + 2.084d20*zeta + 1.872d21*zeta2)
      1         * exp(-4.9924d0*zeta)
-       xden = zeta3 + 1.2383d0*xlm1 - 8.141d-1*xlm2 
+       xden = zeta3 + 1.2383d0*xlm1 - 8.141d-1*xlm2
       end if
       fpair = xnum/xden
 
@@ -245,14 +130,14 @@ c..equation 2.6
       qpair  = xnum*xden
 
 c..equation 2.5
-      pair     = tfac4 * (1.0d0 + tfac3 * qpair) 
+      pair     = tfac4 * (1.0d0 + tfac3 * qpair)
      1           * gl * exp(-2.0d0*xlm1) * fpair
 
 
 
 
 
-c..plasma neutrino section 
+c..plasma neutrino section
 c..for collective reactions like gamma_plasmon => nu_e + nubar_e
 c..equation 4.6
       gl2  = 1.1095d11*rm/(temp*temp * sqrt(1.0d0+(1.019d-6*rm)**twoth))
@@ -277,7 +162,7 @@ c..equation 4.9 and 4.10
 c..equation 4.11
       if (abs(xnum) .gt. 0.7d0  .or.  xden .lt. 0.0d0) then
        fxy = 1.0d0
-      else 
+      else
        fxy = 1.05d0 + (0.39d0 - 1.25d0*xnum - 0.35d0*sin(4.5d0*xnum)
      1                 - 0.3d0 * exp(-1.0d0*(4.5d0*xnum + 0.9d0)**2))
      2       * exp(-1.0d0* ( min(0.0d0, xden - 1.6d0 + 1.25d0*xnum)
@@ -289,12 +174,12 @@ c..equation 4.5
 
 c..equation 4.1
       plas = 0.93153d0 * qv
-      
 
 
 
 
-c..photoneutrino process section 
+
+c..photoneutrino process section
 c..for reactions like e- + gamma => e- + nu_e + nubar_e
 c..                   e+ + gamma => e+ + nu_e + nubar_e
 c..equation 3.8 for tau, equation 3.6 for cc,
@@ -317,7 +202,7 @@ c..and table 2 written out for speed
        c15  = -5.249d9
        c16  = -5.153d9
        c20  =  1.067d11
-       c21  = -9.782d9 
+       c21  = -9.782d9
        c22  = -7.193d9
        c23  = -6.936d9
        c24  = -6.893d9
@@ -342,41 +227,41 @@ c..and table 2 written out for speed
       else if (temp .ge. 1.0d8  .and. temp .lt. 1.0d9) then
        tau  =  log10(temp * 1.0d-8)
        cc   =  1.5654d0
-       c00  =  9.889d10 
+       c00  =  9.889d10
        c01  = -4.524d8
-       c02  = -6.088d6 
-       c03  =  4.269d7 
-       c04  =  5.172d7 
-       c05  =  4.910d7 
+       c02  = -6.088d6
+       c03  =  4.269d7
+       c04  =  5.172d7
+       c05  =  4.910d7
        c06  =  4.388d7
        c10  =  1.813d11
-       c11  = -7.556d9 
-       c12  = -3.304d9  
+       c11  = -7.556d9
+       c12  = -3.304d9
        c13  = -1.031d9
-       c14  = -1.764d9  
+       c14  = -1.764d9
        c15  = -1.851d9
        c16  = -1.928d9
        c20  =  9.750d10
        c21  =  3.484d10
-       c22  =  5.199d9  
-       c23  = -1.695d9  
-       c24  = -2.865d9  
-       c25  = -3.395d9  
+       c22  =  5.199d9
+       c23  = -1.695d9
+       c24  = -2.865d9
+       c25  = -3.395d9
        c26  = -3.418d9
-       dd01 = -1.135d8   
-       dd02 =  1.256d8   
-       dd03 =  5.149d7   
-       dd04 =  3.436d7   
+       dd01 = -1.135d8
+       dd02 =  1.256d8
+       dd03 =  5.149d7
+       dd04 =  3.436d7
        dd05 =  1.005d7
-       dd11 =  1.652d9  
-       dd12 = -3.119d9  
-       dd13 = -1.839d9  
-       dd14 = -1.458d9  
+       dd11 =  1.652d9
+       dd12 = -3.119d9
+       dd13 = -1.839d9
+       dd14 = -1.458d9
        dd15 = -8.956d8
-       dd21 = -1.549d10  
-       dd22 = -9.338d9  
-       dd23 = -5.899d9  
-       dd24 = -3.035d9  
+       dd21 = -1.549d10
+       dd22 = -9.338d9
+       dd23 = -5.899d9
+       dd24 = -3.035d9
        dd25 = -1.598d9
 
       else if (temp .ge. 1.0d9) then
@@ -384,34 +269,34 @@ c..and table 2 written out for speed
        cc   =  1.5654d0
        c00  =  9.581d10
        c01  =  4.107d8
-       c02  =  2.305d8   
-       c03  =  2.236d8   
-       c04  =  1.580d8   
-       c05  =  2.165d8   
+       c02  =  2.305d8
+       c03  =  2.236d8
+       c04  =  1.580d8
+       c05  =  2.165d8
        c06  =  1.721d8
        c10  =  1.459d12
        c11  =  1.314d11
-       c12  = -1.169d11  
-       c13  = -1.765d11  
-       c14  = -1.867d11  
-       c15  = -1.983d11  
+       c12  = -1.169d11
+       c13  = -1.765d11
+       c14  = -1.867d11
+       c15  = -1.983d11
        c16  = -1.896d11
        c20  =  2.424d11
        c21  = -3.669d9
-       c22  = -8.691d9  
-       c23  = -7.967d9  
-       c24  = -7.932d9  
-       c25  = -7.987d9  
+       c22  = -8.691d9
+       c23  = -7.967d9
+       c24  = -7.932d9
+       c25  = -7.987d9
        c26  = -8.333d9
        dd01 =  4.724d8
-       dd02 =  2.976d8   
-       dd03 =  2.242d8   
-       dd04 =  7.937d7   
+       dd02 =  2.976d8
+       dd03 =  2.242d8
+       dd04 =  7.937d7
        dd05 =  4.859d7
        dd11 = -7.094d11
        dd12 = -3.697d11
-       dd13 = -2.189d11  
-       dd14 = -1.273d11  
+       dd13 = -2.189d11
+       dd14 = -1.273d11
        dd15 = -5.705d10
        dd21 = -2.254d10
        dd22 = -1.551d10
@@ -434,15 +319,15 @@ c..equation 3.7, compute the expensive trig functions only one time
       sin4 = sin(fac1*4.0d0*tau)
       sin5 = sin(fac1*5.0d0*tau)
 
-      a0 = 0.5d0*c00 
+      a0 = 0.5d0*c00
      1     + c01*cos1 + dd01*sin1 + c02*cos2 + dd02*sin2
      2     + c03*cos3 + dd03*sin3 + c04*cos4 + dd04*sin4
      3     + c05*cos5 + dd05*sin5 + 0.5d0*c06*last
-      a1 = 0.5d0*c10 
+      a1 = 0.5d0*c10
      1     + c11*cos1 + dd11*sin1 + c12*cos2 + dd12*sin2
      2     + c13*cos3 + dd13*sin3 + c14*cos4 + dd14*sin4
      3     + c15*cos5 + dd15*sin5 + 0.5d0*c16*last
-      a2 = 0.5d0*c20 
+      a2 = 0.5d0*c20
      1     + c21*cos1 + dd21*sin1 + c22*cos2 + dd22*sin2
      2     + c23*cos3 + dd23*sin3 + c24*cos4 + dd24*sin4
      3     + c25*cos5 + dd25*sin5 + 0.5d0*c26*last
@@ -454,7 +339,7 @@ c..equation 3.4
 
 c..equation 3.3
       xnum   = 0.666d0*((1.0d0 + 2.045d0 * xl)**(-2.066d0))
-      xden   = 1.0d0 + rm / (1.875d8*xl + 1.653d8*xl2 
+      xden   = 1.0d0 + rm / (1.875d8*xl + 1.653d8*xl2
      1                     + 8.449d8*xl3 - 1.604d8*xl4)
       qphoto = xnum/xden
 
@@ -466,7 +351,7 @@ c..equation 3.2
 
 
 
-c..bremsstrahlung neutrino section 
+c..bremsstrahlung neutrino section
 c..for reactions like e- + (z,a) => e- + (z,a) + nu + nubar
 c..                   n  + n     => n + n + nu + nubar
 c..                   n  + p     => n + p + nu + nubar
@@ -534,20 +419,20 @@ c..compute the expensive trig functions of equation 5.21 only once
        sin4 = sin(4.0d0*u)
 
 c..equation 5.21
-       fb =  0.5d0 * 0.17946d0  + 0.00945d0*u + 0.34529d0   
+       fb =  0.5d0 * 0.17946d0  + 0.00945d0*u + 0.34529d0
      1       - 0.05821d0*cos1 - 0.04969d0*sin1
      2       - 0.01089d0*cos2 - 0.01584d0*sin2
      3       - 0.01147d0*cos3 - 0.00504d0*sin3
      4       - 0.00656d0*cos4 - 0.00281d0*sin4
-     5       - 0.00519d0*cos5 
-      
+     5       - 0.00519d0*cos5
+
 c..equation 5.22
        ft =  0.5d0 * 0.06781d0 - 0.02342d0*u + 0.24819d0
      1       - 0.00944d0*cos1 - 0.02213d0*sin1
      2       - 0.01289d0*cos2 - 0.01136d0*sin2
      3       - 0.00589d0*cos3 - 0.00467d0*sin3
      4       - 0.00404d0*cos4 - 0.00131d0*sin4
-     5       - 0.00330d0*cos5 
+     5       - 0.00330d0*cos5
 
 c..equation 5.23
        gb =  0.5d0 * 0.00766d0 - 0.01259d0*u + 0.07917d0
@@ -563,7 +448,7 @@ c..equation 5.24
      2       - 0.00184d0*cos2 - 0.00354d0*sin2
      3       + 0.00146d0*cos3 - 0.00014d0*sin3
      4       + 0.00031d0*cos4 - 0.00018d0*sin4
-     5       + 0.00069d0*cos5 
+     5       + 0.00069d0*cos5
 
 c..equation 5.19 and 5.20
        fliq = v*fb + (1.0d0 - v)*ft
@@ -610,19 +495,19 @@ c..equation 6.7 and table 12
 
 c..equation 6.13  and 6.14
       if (nu .ge. -20.0  .and.  nu .le. 10.0) then
-       z    = zeta/(1.0d0 + f1*nu + f2*nu2 + f3*nu3)  
+       z    = zeta/(1.0d0 + f1*nu + f2*nu2 + f3*nu3)
        bigj = (a1/z + a2*z**(-2.25) + a3*z**(-4.55)) * exp(nu)
      1        / (1.0d0 + b*exp(c*nu)*(1.0d0 + d*z))
 
 c..equation 6.5
        recomb = tfac6 * 2.649d-18 * ye* zbar**13 * den * bigj
-     1          / (exp(zeta + nu) + 1.0d0) 
-      end if 
+     1          / (exp(zeta + nu) + 1.0d0)
+      end if
 
 
 
 
-c..convert from erg/cm^3/s to erg/g/s 
+c..convert from erg/cm^3/s to erg/g/s
 c..comment these out to duplicate the itoh et al plots
       deni   = 1.0d0/den
       pair   = pair*deni
@@ -661,7 +546,7 @@ c..load the coefficients of the expansion
      2     1.0d0/
       data  (b1(i),i=1,4)/ 1.771804140488d4,  -2.014785161019d3,
      1     9.130355392717d1,  -1.670718177489d0/
-      data  (a2(i),i=1,7)/-1.277060388085d-2,  7.187946804945d-2, 
+      data  (a2(i),i=1,7)/-1.277060388085d-2,  7.187946804945d-2,
      1                    -4.262314235106d-1,  4.997559426872d-1,
      2                    -1.285579118012d0,  -3.930805454272d-1,
      3     1.0d0/
