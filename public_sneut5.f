@@ -154,7 +154,7 @@ c..local variables
      3                 c10,c11,c12,c13,c14,c15,c16,c20,c21,c22,c23,c24,
      4                 c25,c26,dd00,dd01,dd02,dd03,dd04,dd05,dd11,dd12,
      5                 dd13,dd14,dd15,dd21,dd22,dd23,dd24,dd25,b,c,d,f0,
-     6                 f1,deni,tempi,abari,zbari,f2,f3,z,deni,xmue,ye,
+     6                 f1,deni,tempi,abari,zbari,f2,f3,z,xmue,ye,
      7                 rp1,rn1,dum,dumdt,dumdd,dumda,dumdz,
      8                 gum,gumdt,gumdd,gumda,gumdz
 

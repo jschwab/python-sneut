@@ -142,7 +142,7 @@ c..declare
       double precision xmue,t9,xl,xlp5,xl2,xl3,xl4,xl5,xl6,xl8,xl9,
      1                 xlm1,xlm2,xlm3,rm,xnum,xden,fpair,fphoto,gl,
      2                 zeta,zeta2,zeta3,qpair,gl2,gl12,gl32,gl72,gl6,
-     3                 ft,fl,cc,xlnt,fxy,qv,tau,qphoto,den6,tfermi,t8,
+     3                 fl,xlnt,fxy,qv,tau,qphoto,den6,tfermi,t8,
      4                 t832,t83,t86,t8m2,t8m5,eta,etam1,etam2,fbrem,
      5                 gbrem,a0,a1,a2,a3,cc,b1,b2,b3,c00,
      6                 c01,c02,c03,c04,c05,c06,c10,c11,c12,c13,c14,c15,
